@@ -42,7 +42,11 @@ class Task(BaseModel):
     title = models.CharField(max_length=255)
     description = models.TextField()
     deadline = models.DateTimeField(default=timezone.now)
-    status = models.CharField(max_length=50, choices=STATUS_CHOICES, default="Pending")
+    status = models.CharField(
+        max_length=50,
+        choices=STATUS_CHOICES,
+        default="Pending",  # must match the choices exactly
+    )
 
     category = models.ForeignKey(Category, on_delete=models.PROTECT, related_name="tasks")
     priority = models.ForeignKey(Priority, on_delete=models.PROTECT, related_name="tasks")
@@ -56,7 +60,7 @@ class Note(BaseModel):
     content = models.TextField()
 
     def __str__(self):
-        return f"Note for: {self.task.title}"
+        return f"Note for {self.task.title}"
 
 
 class SubTask(BaseModel):
@@ -68,7 +72,11 @@ class SubTask(BaseModel):
 
     parent_task = models.ForeignKey(Task, on_delete=models.CASCADE, related_name="subtasks")
     title = models.CharField(max_length=255)
-    status = models.CharField(max_length=50, choices=STATUS_CHOICES, default="Pending")
+    status = models.CharField(
+        max_length=50,
+        choices=STATUS_CHOICES,
+        default="Pending",
+    )
 
     def __str__(self):
         return self.title

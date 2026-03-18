@@ -120,3 +120,40 @@ Optional arguments:
 ```bash
 python manage.py seed --tasks 30 --notes 90 --subtasks 120
 ```
+
+---
+
+### Seeder rules (as required):
+
+- Task title: fake.sentence(nb_words=5)
+- Task description: fake.paragraph(nb_sentences=3)
+- Status: fake.random_element(["Pending", "In Progress", "Completed"])
+- Deadline: timezone.make_aware(fake.date_time_this_month())
+
+## Screenshots
+
+### Admin Home
+![Admin Home](docs/images/admin-home.png)
+
+### Categories
+![Categories](docs/images/categories.png)
+
+### Notes
+![Notes](docs/images/notes.png)
+
+### Priorities
+![Priorities](docs/images/priorities.png)
+
+### SubTasks
+![SubTasks](docs/images/subtasks.png)
+
+### Tasks
+![Tasks](docs/images/task.png)
+
+---
+
+## 👥 Author  
+
+- Name: **John Paolo Narvasa**  
+- Course/Section: **BSIT3-B3**
+- Instructor: **Kristine Joy Martinez**
