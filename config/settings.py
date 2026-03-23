@@ -26,11 +26,11 @@ SECRET_KEY = 'django-insecure-4%-i5&ut*ekh5^z)rho1^^s9g_9ge49*wg48$p1!+s4%od6n#&
 DEBUG = False
 
 ALLOWED_HOSTS = [
-    "pawiienismm.pythonanywhere.com",
+    "pawiienismmm.pythonanywhere.com",
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-    "https://pawiienismm.pythonanywhere.com",
+    "https://pawiienismmm.pythonanywhere.com",
 ]
 
 
