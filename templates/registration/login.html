@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Login | Hangarin{% endblock %}
+{% block page_title %}Login{% endblock %}
+{% block page_subtitle %}Use your account to access the dashboard{% endblock %}
+
+{% block content %}
+<div class="table-card p-3" style="max-width: 520px;">
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button class="btn btn-primary" type="submit">Log in</button>
+  </form>
+</div>
+
+<script>
+  document.querySelectorAll("input").forEach(el => el.classList.add("form-control"));
+</script>
+{% endblock %}

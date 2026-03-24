@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Categories | Hangarin{% endblock %}
+{% block page_title %}Categories{% endblock %}
+{% block page_subtitle %}Manage task categories{% endblock %}
+
+{% block content %}
+<div class="table-card">
+  <div class="p-3 border-bottom d-flex justify-content-between align-items-center">
+    <div class="fw-bold">Categories</div>
+    <a class="btn btn-primary btn-sm" href="{% url 'todo:category_create' %}">+ Add Category</a>
+  </div>
+  <div class="table-responsive">
+    <table class="table mb-0 align-middle">
+      <thead class="table-light">
+        <tr><th>Name</th><th class="text-end">Actions</th></tr>
+      </thead>
+      <tbody>
+        {% for c in categories %}
+        <tr>
+          <td class="fw-semibold">{{ c.name }}</td>
+          <td class="text-end">
+            <a class="btn btn-sm btn-outline-secondary" href="{% url 'todo:category_update' c.pk %}">Edit</a>
+            <a class="btn btn-sm btn-outline-danger" href="{% url 'todo:category_delete' c.pk %}">Delete</a>
+          </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="2" class="text-center text-muted p-4">No categories yet.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

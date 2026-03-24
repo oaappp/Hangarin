@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}{{ title }} | Hangarin{% endblock %}
+{% block page_title %}{{ title }}{% endblock %}
+{% block page_subtitle %}Fill in the task details{% endblock %}
+
+{% block content %}
+<div class="table-card p-3">
+  <form method="post" class="row g-3">
+    {% csrf_token %}
+    <div class="col-12">
+      {{ form.title.label_tag }} {{ form.title }}
+    </div>
+    <div class="col-12">
+      {{ form.description.label_tag }} {{ form.description }}
+    </div>
+    <div class="col-md-6">
+      {{ form.deadline.label_tag }} {{ form.deadline }}
+    </div>
+    <div class="col-md-6">
+      {{ form.status.label_tag }} {{ form.status }}
+    </div>
+    <div class="col-md-6">
+      {{ form.priority.label_tag }} {{ form.priority }}
+    </div>
+    <div class="col-md-6">
+      {{ form.category.label_tag }} {{ form.category }}
+    </div>
+
+    <div class="col-12 d-flex gap-2">
+      <button class="btn btn-primary" type="submit">Save</button>
+      <a class="btn btn-outline-secondary" href="{% url 'todo:dashboard' %}">Cancel</a>
+    </div>
+  </form>
+</div>
+
+<script>
+  // Make Django default widgets look like bootstrap
+  document.querySelectorAll("input, select, textarea").forEach(el => {
+    if (!el.classList.contains("form-control") && el.tagName !== "SELECT") el.classList.add("form-control");
+    if (el.tagName === "SELECT") el.classList.add("form-select");
+    if (el.tagName === "TEXTAREA") el.classList.add("form-control");
+  });
+</script>
+{% endblock %}

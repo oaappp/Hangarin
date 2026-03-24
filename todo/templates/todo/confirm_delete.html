@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}{{ title }} | Hangarin{% endblock %}
+{% block page_title %}{{ title }}{% endblock %}
+{% block page_subtitle %}This action cannot be undone{% endblock %}
+
+{% block content %}
+<div class="table-card p-3" style="max-width: 720px;">
+  <p class="mb-3">{{ message }}</p>
+  <form method="post" class="d-flex gap-2">
+    {% csrf_token %}
+    <button class="btn btn-danger" type="submit">Delete</button>
+    <a class="btn btn-outline-secondary" href="{% url cancel_url %}">Cancel</a>
+  </form>
+</div>
+{% endblock %}

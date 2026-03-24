@@ -1,0 +1,29 @@
+<div class="table-responsive">
+  <table class="table align-middle">
+    <thead class="table-light">
+      <tr>
+        <th>Title</th>
+        <th>Deadline</th>
+        <th>Priority</th>
+        <th>Category</th>
+        <th class="text-end">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for t in tasks %}
+        <tr>
+          <td><a href="{% url 'todo:task_detail' t.pk %}">{{ t.title }}</a></td>
+          <td>{{ t.deadline }}</td>
+          <td>{{ t.priority }}</td>
+          <td>{{ t.category }}</td>
+          <td class="text-end">
+            <a class="btn btn-sm btn-outline-secondary" href="{% url 'todo:task_update' t.pk %}">Edit</a>
+            <a class="btn btn-sm btn-outline-danger" href="{% url 'todo:task_delete' t.pk %}">Delete</a>
+          </td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="5" class="text-center text-muted p-3">No tasks.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>

@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Notes | Hangarin{% endblock %}
+{% block page_title %}Notes{% endblock %}
+{% block page_subtitle %}Notes linked to tasks{% endblock %}
+
+{% block content %}
+<div class="table-card">
+  <div class="p-3 border-bottom d-flex justify-content-between align-items-center">
+    <div class="fw-bold">Notes</div>
+    <a class="btn btn-primary btn-sm" href="{% url 'todo:note_create' %}">+ Add Note</a>
+  </div>
+  <div class="table-responsive">
+    <table class="table mb-0 align-middle">
+      <thead class="table-light">
+        <tr><th>Task</th><th>Content</th><th>Created</th><th class="text-end">Actions</th></tr>
+      </thead>
+      <tbody>
+        {% for n in notes %}
+        <tr>
+          <td class="fw-semibold">{{ n.task }}</td>
+          <td>{{ n.content|truncatechars:60 }}</td>
+          <td>{{ n.created_at }}</td>
+          <td class="text-end">
+            <a class="btn btn-sm btn-outline-secondary" href="{% url 'todo:note_update' n.pk %}">Edit</a>
+            <a class="btn btn-sm btn-outline-danger" href="{% url 'todo:note_delete' n.pk %}">Delete</a>
+          </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="4" class="text-center text-muted p-4">No notes yet.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
