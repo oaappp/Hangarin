@@ -5,6 +5,21 @@ from django.utils import timezone
 from .models import Task, Category, Priority, Note, SubTask
 from .forms import TaskForm, CategoryForm, PriorityForm, NoteForm, SubTaskForm
 
+from django.contrib.auth import login
+from .forms import SignUpForm
+
+from django.db.models.deletion import ProtectedError
+from django.contrib import messages
+
+def signup_view(request):
+    form = SignUpForm(request.POST or None)
+    if request.method == "POST" and form.is_valid():
+        user = form.save()
+        login(request, user)  # auto login after signup
+        return redirect("todo:dashboard")
+
+    return render(request, "registration/signup.html", {"form": form})
+
 
 # -------------------------
 # DASHBOARD + TASK CRUD
@@ -45,6 +60,23 @@ def task_create(request):
 def task_detail(request, pk):
     task = get_object_or_404(Task, pk=pk)
     return render(request, "todo/task_detail.html", {"task": task})
+
+
+@login_required
+def task_list(request):
+    pending = Task.objects.filter(status="Pending").order_by("deadline")
+    in_progress = Task.objects.filter(status="In Progress").order_by("deadline")
+    completed = Task.objects.filter(status="Completed").order_by("-updated_at")
+
+    context = {
+        "pending": pending,
+        "in_progress": in_progress,
+        "completed": completed,
+        "pending_count": pending.count(),
+        "in_progress_count": in_progress.count(),
+        "completed_count": completed.count(),
+    }
+    return render(request, "todo/task_list.html", context)
 
 
 @login_required
@@ -102,9 +134,18 @@ def category_update(request, pk):
 @login_required
 def category_delete(request, pk):
     category = get_object_or_404(Category, pk=pk)
+
     if request.method == "POST":
-        category.delete()
+        try:
+            category.delete()
+            messages.success(request, "Category deleted successfully.")
+        except ProtectedError:
+            messages.error(
+                request,
+                "This category cannot be deleted because it is still assigned to one or more tasks."
+            )
         return redirect("todo:category_list")
+
     return render(request, "todo/confirm_delete.html", {
         "object": category,
         "cancel_url": "todo:category_list",
@@ -144,9 +185,18 @@ def priority_update(request, pk):
 @login_required
 def priority_delete(request, pk):
     priority = get_object_or_404(Priority, pk=pk)
+
     if request.method == "POST":
-        priority.delete()
+        try:
+            priority.delete()
+            messages.success(request, "Priority deleted successfully.")
+        except ProtectedError:
+            messages.error(
+                request,
+                "This priority cannot be deleted because it is still assigned to one or more tasks."
+            )
         return redirect("todo:priority_list")
+
     return render(request, "todo/confirm_delete.html", {
         "object": priority,
         "cancel_url": "todo:priority_list",

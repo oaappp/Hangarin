@@ -4,21 +4,34 @@
 {% block page_subtitle %}Fill in the details{% endblock %}
 
 {% block content %}
-<div class="table-card p-3" style="max-width: 720px;">
-  <form method="post" class="row g-3">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <div class="d-flex gap-2">
-      <button class="btn btn-primary" type="submit">Save</button>
-      <a class="btn btn-outline-secondary" href="{% url back_url %}">Cancel</a>
+<div class="form-card form-card-sm">
+  <div class="form-card-header">
+    <div>
+      <div class="form-title">{{ title }}</div>
+      <div class="form-subtitle">Provide the required information</div>
     </div>
-  </form>
+  </div>
+
+  <div class="form-card-body">
+    <form method="post" class="row g-3">
+      {% csrf_token %}
+      {{ form.as_p }}
+
+      <div class="d-flex gap-2 pt-2">
+        <button class="btn btn-primary px-4" type="submit">Save</button>
+        <a class="btn btn-light border px-4" href="{% url back_url %}">Cancel</a>
+      </div>
+    </form>
+  </div>
 </div>
 
 <script>
   document.querySelectorAll("input, select, textarea").forEach(el => {
-    if (el.tagName === "SELECT") el.classList.add("form-select");
-    else el.classList.add("form-control");
+    if (el.tagName === "SELECT") {
+      el.classList.add("form-select", "form-control-custom");
+    } else {
+      el.classList.add("form-control", "form-control-custom");
+    }
   });
 </script>
 {% endblock %}

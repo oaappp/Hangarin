@@ -4,125 +4,128 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-
   <title>{% block title %}Hangarin{% endblock %}</title>
 
-  <!-- Bootstrap 5 (CDN) -->
   <link
     href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
     rel="stylesheet"
   />
 
-  <!-- App CSS -->
   <link rel="stylesheet" href="{% static 'todo/app.css' %}">
-
   {% block extra_css %}{% endblock %}
+
+  <link
+  href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+  rel="stylesheet"
+  />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="{% static 'todo/app.css' %}">
 </head>
 
 <body>
-<div class="app">
+<div class="app-layout">
 
-  <!-- SIDEBAR -->
+  <!-- Sidebar -->
   <aside class="sidebar">
     <div class="sidebar-header">
       <div class="brand">Hangarin</div>
       <div class="brand-sub">Task Manager</div>
     </div>
 
-    <nav class="nav flex-column gap-2 px-2">
+    {% if user.is_authenticated %}
+      <nav class="sidebar-nav">
 
-      <!-- Dashboard -->
-      <div class="sidebar-item">
-        <a class="nav-link sidebar-link flex-grow-1" href="{% url 'todo:dashboard' %}">
-          Dashboard
+        <a class="sidebar-link {% if request.path == '/' %}active-link{% endif %}" href="{% url 'todo:dashboard' %}">
+          <i class="bi bi-grid-1x2-fill sidebar-icon"></i>
+          <span>Dashboard</span>
         </a>
-      </div>
 
-      <!-- Tasks -->
-      <div class="sidebar-item">
-        <a class="nav-link sidebar-link flex-grow-1" href="{% url 'todo:dashboard' %}">
-          Tasks
+        <a class="sidebar-link {% if '/tasks/' in request.path and '/tasks/new/' not in request.path %}active-link{% endif %}" href="{% url 'todo:task_list' %}">
+          <i class="bi bi-list-check sidebar-icon"></i>
+          <span>Tasks</span>
         </a>
-        <a class="sidebar-add" href="{% url 'todo:task_create' %}" title="Add Task">+</a>
-      </div>
 
-      <!-- Categories -->
-      <div class="sidebar-item">
-        <a class="nav-link sidebar-link flex-grow-1" href="{% url 'todo:category_list' %}">
-          Categories
+        <a class="sidebar-link {% if '/categories/' in request.path %}active-link{% endif %}" href="{% url 'todo:category_list' %}">
+          <i class="bi bi-folder2-open sidebar-icon"></i>
+          <span>Categories</span>
         </a>
-        <a class="sidebar-add" href="{% url 'todo:category_create' %}" title="Add Category">+</a>
-      </div>
 
-      <!-- Priorities -->
-      <div class="sidebar-item">
-        <a class="nav-link sidebar-link flex-grow-1" href="{% url 'todo:priority_list' %}">
-          Priorities
+        <a class="sidebar-link {% if '/priorities/' in request.path %}active-link{% endif %}" href="{% url 'todo:priority_list' %}">
+          <i class="bi bi-flag-fill sidebar-icon"></i>
+          <span>Priorities</span>
         </a>
-        <a class="sidebar-add" href="{% url 'todo:priority_create' %}" title="Add Priority">+</a>
-      </div>
 
-      <!-- Notes -->
-      <div class="sidebar-item">
-        <a class="nav-link sidebar-link flex-grow-1" href="{% url 'todo:note_list' %}">
-          Notes
+        <a class="sidebar-link {% if '/notes/' in request.path %}active-link{% endif %}" href="{% url 'todo:note_list' %}">
+          <i class="bi bi-journal-text sidebar-icon"></i>
+          <span>Notes</span>
         </a>
-        <a class="sidebar-add" href="{% url 'todo:note_create' %}" title="Add Note">+</a>
-      </div>
 
-      <!-- SubTasks -->
-      <div class="sidebar-item">
-        <a class="nav-link sidebar-link flex-grow-1" href="{% url 'todo:subtask_list' %}">
-          SubTasks
+        <a class="sidebar-link {% if '/subtasks/' in request.path %}active-link{% endif %}" href="{% url 'todo:subtask_list' %}">
+          <i class="bi bi-check2-square sidebar-icon"></i>
+          <span>SubTasks</span>
         </a>
-        <a class="sidebar-add" href="{% url 'todo:subtask_create' %}" title="Add SubTask">+</a>
+
+      </nav>
+    {% else %}
+      <div class="sidebar-empty">
+        Please login to access the dashboard.
       </div>
+    {% endif %}
 
-      <!-- Admin -->
-      <div class="sidebar-item">
-        <a class="nav-link sidebar-link flex-grow-1" href="/admin/">
-          Admin
-        </a>
-      </div>
-
-    </nav>
-
-    <div class="sidebar-footer px-3">
-      {% if user.is_authenticated %}
-        <div class="small text-muted">Logged in as</div>
-        <div class="fw-semibold mb-2">{{ user.username }}</div>
-        <a class="btn btn-sm btn-outline-light w-100" href="{% url 'logout' %}">Logout</a>
-      {% else %}
-        <a class="btn btn-sm btn-light w-100" href="{% url 'login' %}">Login</a>
-      {% endif %}
-    </div>
+    <div class="sidebar-footer"></div>
   </aside>
 
-  <!-- MAIN -->
+  <!-- Main -->
   <main class="main">
-
-    <!-- TOPBAR -->
-    <div class="topbar">
-      <div class="topbar-left">
+    <header class="topbar">
+      <div>
         <div class="page-title">{% block page_title %}{% endblock %}</div>
         <div class="page-subtitle">{% block page_subtitle %}{% endblock %}</div>
       </div>
 
-      <div class="topbar-right d-flex gap-2">
+      <div class="topbar-actions">
         {% if user.is_authenticated %}
-          <a class="btn btn-primary btn-sm" href="{% url 'todo:task_create' %}">+ New Task</a>
+          <span class="topbar-user d-none d-md-inline">
+            <i class="bi bi-person-circle me-1"></i> Welcome, {{ user.username }}
+          </span>
+
+          {% if user.is_staff or user.is_superuser %}
+            <a class="topbar-btn topbar-btn-admin" href="/admin/">
+              <i class="bi bi-shield-lock me-1"></i> Admin
+            </a>
+          {% endif %}
+
+          <form method="post" action="{% url 'logout' %}" class="m-0">
+            {% csrf_token %}
+            <button class="topbar-btn topbar-btn-logout" type="submit">
+              <i class="bi bi-box-arrow-right me-1"></i> Logout
+            </button>
+          </form>
         {% else %}
-          <a class="btn btn-primary btn-sm" href="{% url 'login' %}">Login</a>
+          <a class="topbar-btn topbar-btn-login" href="{% url 'login' %}">
+            <i class="bi bi-box-arrow-in-right me-1"></i> Login
+          </a>
         {% endif %}
       </div>
-    </div>
+    </header>
 
-    <!-- CONTENT -->
-    <div class="content">
+    <section class="content-area">
+
+      {% if messages %}
+        <div class="mb-3">
+          {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+              {{ message }}
+              <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+
       {% block content %}{% endblock %}
-    </div>
-
+    </section>
   </main>
+
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

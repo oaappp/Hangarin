@@ -4,41 +4,63 @@
 {% block page_subtitle %}Fill in the task details{% endblock %}
 
 {% block content %}
-<div class="table-card p-3">
-  <form method="post" class="row g-3">
-    {% csrf_token %}
-    <div class="col-12">
-      {{ form.title.label_tag }} {{ form.title }}
+<div class="form-card">
+  <div class="form-card-header">
+    <div>
+      <div class="form-title">{{ title }}</div>
+      <div class="form-subtitle">Provide the necessary task information</div>
     </div>
-    <div class="col-12">
-      {{ form.description.label_tag }} {{ form.description }}
-    </div>
-    <div class="col-md-6">
-      {{ form.deadline.label_tag }} {{ form.deadline }}
-    </div>
-    <div class="col-md-6">
-      {{ form.status.label_tag }} {{ form.status }}
-    </div>
-    <div class="col-md-6">
-      {{ form.priority.label_tag }} {{ form.priority }}
-    </div>
-    <div class="col-md-6">
-      {{ form.category.label_tag }} {{ form.category }}
-    </div>
+  </div>
 
-    <div class="col-12 d-flex gap-2">
-      <button class="btn btn-primary" type="submit">Save</button>
-      <a class="btn btn-outline-secondary" href="{% url 'todo:dashboard' %}">Cancel</a>
-    </div>
-  </form>
+  <div class="form-card-body">
+    <form method="post" class="row g-3">
+      {% csrf_token %}
+
+      <div class="col-12">
+        <label class="form-label fw-semibold" for="{{ form.title.id_for_label }}">Title</label>
+        {{ form.title }}
+      </div>
+
+      <div class="col-12">
+        <label class="form-label fw-semibold" for="{{ form.description.id_for_label }}">Description</label>
+        {{ form.description }}
+      </div>
+
+      <div class="col-md-6">
+        <label class="form-label fw-semibold" for="{{ form.deadline.id_for_label }}">Deadline</label>
+        {{ form.deadline }}
+      </div>
+
+      <div class="col-md-6">
+        <label class="form-label fw-semibold" for="{{ form.status.id_for_label }}">Status</label>
+        {{ form.status }}
+      </div>
+
+      <div class="col-md-6">
+        <label class="form-label fw-semibold" for="{{ form.priority.id_for_label }}">Priority</label>
+        {{ form.priority }}
+      </div>
+
+      <div class="col-md-6">
+        <label class="form-label fw-semibold" for="{{ form.category.id_for_label }}">Category</label>
+        {{ form.category }}
+      </div>
+
+      <div class="col-12 d-flex gap-2 pt-2">
+        <button class="btn btn-primary px-4" type="submit">Save</button>
+        <a class="btn btn-light border px-4" href="{% url 'todo:task_list' %}">Cancel</a>
+      </div>
+    </form>
+  </div>
 </div>
 
 <script>
-  // Make Django default widgets look like bootstrap
   document.querySelectorAll("input, select, textarea").forEach(el => {
-    if (!el.classList.contains("form-control") && el.tagName !== "SELECT") el.classList.add("form-control");
-    if (el.tagName === "SELECT") el.classList.add("form-select");
-    if (el.tagName === "TEXTAREA") el.classList.add("form-control");
+    if (el.tagName === "SELECT") {
+      el.classList.add("form-select", "form-control-custom");
+    } else {
+      el.classList.add("form-control", "form-control-custom");
+    }
   });
 </script>
 {% endblock %}

@@ -2,46 +2,52 @@
 
 {% block title %}Dashboard | Hangarin{% endblock %}
 {% block page_title %}Dashboard{% endblock %}
-{% block page_subtitle %}Overview and task lists{% endblock %}
+{% block page_subtitle %}Overview of your tasks{% endblock %}
 
 {% block content %}
 
-<div class="row g-3 mb-3">
+<div class="row g-4 mb-4">
   <div class="col-md-3">
-    <div class="stat-card">
+    <div class="stat-card stat-card-blue">
       <div class="stat-label">Total Tasks</div>
       <div class="stat-value">{{ total_tasks }}</div>
     </div>
   </div>
+
   <div class="col-md-3">
-    <div class="stat-card">
+    <div class="stat-card stat-card-orange">
       <div class="stat-label">Pending</div>
       <div class="stat-value">{{ pending_count }}</div>
     </div>
   </div>
+
   <div class="col-md-3">
-    <div class="stat-card">
+    <div class="stat-card stat-card-purple">
       <div class="stat-label">In Progress</div>
       <div class="stat-value">{{ in_progress_count }}</div>
     </div>
   </div>
+
   <div class="col-md-3">
-    <div class="stat-card">
-      <div class="stat-label">Overdue (not completed)</div>
+    <div class="stat-card stat-card-red">
+      <div class="stat-label">Overdue</div>
       <div class="stat-value">{{ overdue_count }}</div>
     </div>
   </div>
 </div>
 
-<div class="table-card mb-3">
-  <div class="p-3 border-bottom d-flex justify-content-between align-items-center">
-    <div class="fw-bold">Recent Tasks</div>
-    <a class="btn btn-sm btn-primary" href="{% url 'todo:task_create' %}">+ Add Task</a>
+<div class="table-card">
+  <div class="card-header-custom">
+    <div>
+      <div class="card-title-custom">Recent Tasks</div>
+      <div class="card-subtitle-custom">Recently updated tasks</div>
+    </div>
+    <a class="btn btn-primary btn-sm px-3" href="{% url 'todo:task_list' %}">View All Tasks</a>
   </div>
 
   <div class="table-responsive">
-    <table class="table mb-0 align-middle">
-      <thead class="table-light">
+    <table class="table custom-table mb-0 align-middle">
+      <thead>
         <tr>
           <th>Title</th>
           <th>Status</th>
@@ -53,80 +59,37 @@
       </thead>
       <tbody>
         {% for t in recent_tasks %}
-          <tr class="{% if t.deadline < now and t.status != 'Completed' %}row-overdue{% endif %}">
-            <td class="fw-semibold">
-              <a href="{% url 'todo:task_detail' t.pk %}">{{ t.title }}</a>
-            </td>
+        <tr>
+          <td class="fw-semibold">
+            <a href="{% url 'todo:task_detail' t.pk %}" class="table-link">{{ t.title }}</a>
+          </td>
 
-            <td>
-              {% if t.status == "Pending" %}
-                <span class="badge-soft badge-pending">Pending</span>
-              {% elif t.status == "In Progress" %}
-                <span class="badge-soft badge-progress">In Progress</span>
-              {% else %}
-                <span class="badge-soft badge-done">Completed</span>
-              {% endif %}
+          <td>
+            {% if t.status == "Pending" %}
+              <span class="badge-soft badge-pending">Pending</span>
+            {% elif t.status == "In Progress" %}
+              <span class="badge-soft badge-progress">In Progress</span>
+            {% else %}
+              <span class="badge-soft badge-done">Completed</span>
+            {% endif %}
+          </td>
 
-              {% if t.deadline < now and t.status != "Completed" %}
-                <span class="badge-soft badge-overdue ms-2">Overdue</span>
-              {% endif %}
-            </td>
+          <td>{{ t.deadline }}</td>
+          <td>{{ t.priority }}</td>
+          <td>{{ t.category }}</td>
 
-            <td>{{ t.deadline }}</td>
-            <td>{{ t.priority }}</td>
-            <td>{{ t.category }}</td>
-
-            <td class="text-end">
-              <a class="btn btn-sm btn-outline-secondary" href="{% url 'todo:task_update' t.pk %}">Edit</a>
-              <a class="btn btn-sm btn-outline-danger" href="{% url 'todo:task_delete' t.pk %}">Delete</a>
-            </td>
-          </tr>
+          <td class="text-end">
+            <a class="btn btn-sm btn-light border me-1" href="{% url 'todo:task_update' t.pk %}">Edit</a>
+            <a class="btn btn-sm btn-outline-danger" href="{% url 'todo:task_delete' t.pk %}">Delete</a>
+          </td>
+        </tr>
         {% empty %}
-          <tr><td colspan="6" class="text-center p-4 text-muted">No tasks yet.</td></tr>
+        <tr>
+          <td colspan="6" class="text-center text-muted py-4">No recent tasks found.</td>
+        </tr>
         {% endfor %}
       </tbody>
     </table>
-  </div>
-</div>
-
-<div class="table-card">
-  <div class="p-3 border-bottom">
-    <div class="fw-bold">Task Tables</div>
-    <div class="text-muted small">Separated by status</div>
-  </div>
-
-  <div class="p-3">
-    <ul class="nav nav-pills mb-3" role="tablist">
-      <li class="nav-item">
-        <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#tab-pending" type="button">
-          Pending ({{ pending_count }})
-        </button>
-      </li>
-      <li class="nav-item">
-        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-progress" type="button">
-          In Progress ({{ in_progress_count }})
-        </button>
-      </li>
-      <li class="nav-item">
-        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-completed" type="button">
-          Completed ({{ completed_count }})
-        </button>
-      </li>
-    </ul>
-
-    <div class="tab-content">
-      <div class="tab-pane fade show active" id="tab-pending">
-        {% include "todo/partials/task_table.html" with tasks=pending %}
-      </div>
-
-      <div class="tab-pane fade" id="tab-progress">
-        {% include "todo/partials/task_table.html" with tasks=in_progress %}
-      </div>
-
-      <div class="tab-pane fade" id="tab-completed">
-        {% include "todo/partials/task_table.html" with tasks=completed %}
-      </div>
-    </div>
   </div>
 </div>
 

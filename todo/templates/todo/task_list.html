@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}Tasks | Hangarin{% endblock %}
+{% block page_title %}Tasks{% endblock %}
+{% block page_subtitle %}Manage all tasks by status{% endblock %}
+
+{% block content %}
+<div class="table-card">
+  <div class="card-header-custom">
+    <div>
+      <div class="card-title-custom">Task Tables</div>
+      <div class="card-subtitle-custom">Separated by status</div>
+    </div>
+    <a class="btn btn-primary btn-sm px-3" href="{% url 'todo:task_create' %}">+ Add Task</a>
+  </div>
+
+  <div class="p-3">
+    <ul class="nav nav-pills custom-pills mb-4" role="tablist">
+      <li class="nav-item">
+        <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#tab-pending" type="button">
+          Pending ({{ pending_count }})
+        </button>
+      </li>
+      <li class="nav-item">
+        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-progress" type="button">
+          In Progress ({{ in_progress_count }})
+        </button>
+      </li>
+      <li class="nav-item">
+        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-completed" type="button">
+          Completed ({{ completed_count }})
+        </button>
+      </li>
+    </ul>
+
+    <div class="tab-content">
+      <div class="tab-pane fade show active" id="tab-pending">
+        {% include "todo/partials/task_table.html" with tasks=pending %}
+      </div>
+
+      <div class="tab-pane fade" id="tab-progress">
+        {% include "todo/partials/task_table.html" with tasks=in_progress %}
+      </div>
+
+      <div class="tab-pane fade" id="tab-completed">
+        {% include "todo/partials/task_table.html" with tasks=completed %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
